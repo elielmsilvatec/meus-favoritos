@@ -1,13 +1,476 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meus Favoritos</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Atalhos Compactos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: var(--dark-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            font-size: 2rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--accent-color);
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        #search {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        #search:focus {
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 60px;
+        }
+
+        .card-icon {
+            font-size: 1.2rem;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .card-body {
+            padding: 12px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .card-url {
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            word-break: break-all;
+            margin-top: auto;
+        }
+
+        .card-footer {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .card-header {
+                padding: 10px;
+                min-height: 55px;
+            }
+            
+            .card-body {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 5px;
+                min-height: 70px;
+            }
+            
+            .card-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Meus Atalhos</h1>
+            <p class="subtitle">Acesso rápido às minhas ferramentas e plataformas</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Pesquisar atalhos...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="grid">
+            <!-- Cada card representa um atalho -->
+            <div class="card" data-url="https://manus.im/login">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="card-title">Manus</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Sistema de gerenciamento e automação de processos.</p>
+                    <div class="card-url">manus.im/login</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+             <div class="card" data-url="https://www.linkedin.com/in/elielmsilva">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-title">Linkdin</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">linkedin </p>
+                    <div class="card-url">linkedin.com/</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+
+            <div class="card" data-url="https://app.nutror.com/resumo">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-title">Nutror</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Plataforma de análise e resumo de dados financeiros.</p>
+                    <div class="card-url">app.nutror.com/resumo</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://chatgpt.com/g/g-Jl0yzSSRX-lit-developer-helper">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="card-title">Lit Developer</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Assistente de desenvolvimento especializado em Lit.</p>
+                    <div class="card-url">chatgpt.com/g/g-Jl0yzSSRX</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://trader.genialinvestimentos.com.br/login">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="card-title">Genial Trader</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Plataforma de trading e investimentos da Genial.</p>
+                    <div class="card-url">trader.genialinvestimentos.com.br</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://integrasys.vercel.app/">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="card-title">Integrasys</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Sistema de integração e automação de processos.</p>
+                    <div class="card-url">integrasys.vercel.app</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://warren.com.br/onboarding/warren/desktop/">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="card-title">Warren</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Plataforma de investimentos e gestão financeira.</p>
+                    <div class="card-url">warren.com.br</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://railway.com/">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="card-title">Railway</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Plataforma de deploy e hospedagem de aplicações.</p>
+                    <div class="card-url">railway.com</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://chat.qwen.ai/auth">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="card-title">Qwen Chat</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Assistente de IA baseado no modelo Qwen.</p>
+                    <div class="card-url">chat.qwen.ai</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://chat.deepseek.com/">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="card-title">DeepSeek</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Assistente de IA avançado para diversas tarefas.</p>
+                    <div class="card-url">chat.deepseek.com</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+
+            <div class="card" data-url="https://google.com.br">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="card-title">Google</div>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Motor de busca e serviços do Google Brasil.</p>
+                    <div class="card-url">google.com.br</div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn">Acessar</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Meus Atalhos &copy; 2025 - Organize seus links favoritos</p>
+        </footer>
+    </div>
+
+    <script>
+        // Adiciona funcionalidade de clique nos cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Evita que o clique no botão dispare o evento duas vezes
+                if (e.target.classList.contains('btn') || e.target.closest('.btn')) {
+                    return;
+                }
+                
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            });
+            
+            // Adiciona funcionalidade ao botão
+            const button = card.querySelector('.btn');
+            if (button) {
+                button.addEventListener('click', function() {
+                    const url = card.getAttribute('data-url');
+                    if (url) {
+                        window.open(url, '_blank');
+                    }
+                });
+            }
+        });
+
+        // Adiciona funcionalidade de pesquisa
+        const searchInput = document.getElementById('search');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const description = card.querySelector('.card-description').textContent.toLowerCase();
+                const url = card.querySelector('.card-url').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm) || url.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
 </html>
